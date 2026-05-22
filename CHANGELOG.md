@@ -1,5 +1,23 @@
 # Changelog
 
+## v1.15.0
+
+[compare changes](https://github.com/material-extensions/material-icons-browser-extension/compare/v1.14.1...v1.15.0)
+
+### 🚀 Enhancements
+
+- Remove language id build process ([#145](https://github.com/material-extensions/material-icons-browser-extension/pull/145))
+- Add Firefox Android support ([#144](https://github.com/material-extensions/material-icons-browser-extension/pull/144))
+- Improve release workflow ([5e78321](https://github.com/material-extensions/material-icons-browser-extension/commit/5e78321))
+
+### 🩹 Fixes
+
+- Skip copying semantic icon classes to avoid RGH conflict ([#143](https://github.com/material-extensions/material-icons-browser-extension/pull/143))
+
+### ❤️ Contributors
+
+- Philipp Kief ([@PKief](https://github.com/PKief))
+
 ## v1.14.1
 
 [compare changes](https://github.com/material-extensions/material-icons-browser-extension/compare/v1.14.0...v1.14.1)
