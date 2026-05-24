@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -17,9 +21,15 @@ jobs:
     name: Build Material Icons Browser Extension
     steps:
       - name: 🛎️ Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
+
+      - name: 📌 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
 
       - name: 📦 Install dependencies
         run: npm ci
@@ -27,5 +37,68 @@ jobs:
       - name: 🧹 Check code quality
         run: npm run lint
 
+      - name: 🧪 Run tests
+        run: npm test
+
       - name: 🛠️ Build extension
         run: npm run build
+
+      - name: 📤 Upload extension build
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-build
+          path: dist/chrome-edge/
+          retention-days: 1
+
+  e2e:
+    runs-on: [ubuntu-latest]
+    name: E2E Tests
+    needs: build
+    steps:
+      - name: 🛎️ Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: 📌 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 📥 Download extension build
+        uses: actions/download-artifact@v4
+        with:
+          name: extension-build
+          path: dist/chrome-edge/
+
+      - name: 🎭 Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('package-lock.json') }}
+
+      - name: 🎭 Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install chromium --with-deps
+
+      - name: 🎭 Install Playwright system deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: 🧪 Run e2e tests
+        run: xvfb-run npx playwright test
+
+      - name: 📤 Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
