@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.16.1
+
+[compare changes](https://github.com/material-extensions/material-icons-browser-extension/compare/v1.16.0...v1.16.1)
+
+### 🩹 Fixes
+
+- Improve extension with tests and fixes ([#149](https://github.com/material-extensions/material-icons-browser-extension/pull/149))
+
+### ❤️ Contributors
+
+- Philipp Kief ([@PKief](https://github.com/PKief))
+
 ## v1.16.0
 
 [compare changes](https://github.com/material-extensions/material-icons-browser-extension/compare/v1.15.0...v1.16.0)
